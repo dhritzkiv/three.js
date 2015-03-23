@@ -26,6 +26,7 @@ if ( Math.sign === undefined ) {
 
 }
 
+console.log("custom build for Matter and Form");
 
 // set the default log handlers
 THREE.log = function() { console.log.apply( console, arguments ); }
