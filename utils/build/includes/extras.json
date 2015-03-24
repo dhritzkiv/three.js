@@ -1,7 +1,3 @@
 [
-	"src/extras/GeometryUtils.js",
-	"src/extras/ImageUtils.js",
-	"src/extras/SceneUtils.js",
-	"src/extras/objects/ImmediateRenderObject.js",
-	"src/extras/objects/MorphBlendMesh.js"
+	"src/extras/objects/ImmediateRenderObject.js"
 ]

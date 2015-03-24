@@ -290,7 +290,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 	var _maxTextures = _gl.getParameter( _gl.MAX_TEXTURE_IMAGE_UNITS );
 	var _maxVertexTextures = _gl.getParameter( _gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS );
 	var _maxTextureSize = _gl.getParameter( _gl.MAX_TEXTURE_SIZE );
-	var _maxCubemapSize = _gl.getParameter( _gl.MAX_CUBE_MAP_TEXTURE_SIZE );
+	//var _maxCubemapSize = _gl.getParameter( _gl.MAX_CUBE_MAP_TEXTURE_SIZE );
 
 	var _supportsVertexTextures = _maxVertexTextures > 0;
 	var _supportsBoneTextures = _supportsVertexTextures && extensions.get( 'OES_texture_float' );
@@ -303,7 +303,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 	var _fragmentShaderPrecisionHighpFloat = _gl.getShaderPrecisionFormat( _gl.FRAGMENT_SHADER, _gl.HIGH_FLOAT );
 	var _fragmentShaderPrecisionMediumpFloat = _gl.getShaderPrecisionFormat( _gl.FRAGMENT_SHADER, _gl.MEDIUM_FLOAT );
 
-	var getCompressedTextureFormats = ( function () {
+	/*var getCompressedTextureFormats = ( function () {
 
 		var array;
 
@@ -333,7 +333,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 		};
 
-	} )();
+	} )();*/
 
 	// clamp precision to maximum available
 
@@ -5698,7 +5698,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 							mipmap = mipmaps[ j ];
 
-							if ( texture.format !== THREE.RGBAFormat && texture.format !== THREE.RGBFormat ) {
+							/*if ( texture.format !== THREE.RGBAFormat && texture.format !== THREE.RGBFormat ) {
 
 								if ( getCompressedTextureFormats().indexOf( glFormat ) > -1 ) {
 
@@ -5710,11 +5710,11 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 								}
 
-							} else {
+							} else {*/
 
 								_gl.texImage2D( _gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, j, glFormat, mipmap.width, mipmap.height, 0, glFormat, glType, mipmap.data );
 
-							}
+							/*}*/
 
 						}
 
