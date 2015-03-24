@@ -365,10 +365,10 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 	// Plugins
 
-	var shadowMapPlugin = new THREE.ShadowMapPlugin( this, lights, _webglObjects, _webglObjectsImmediate );
+	//var shadowMapPlugin = new THREE.ShadowMapPlugin( this, lights, _webglObjects, _webglObjectsImmediate );
 
-	var spritePlugin = new THREE.SpritePlugin( this, sprites );
-	var lensFlarePlugin = new THREE.LensFlarePlugin( this, lensFlares );
+	//var spritePlugin = new THREE.SpritePlugin( this, sprites );
+	//var lensFlarePlugin = new THREE.LensFlarePlugin( this, lensFlares );
 
 	// API
 
@@ -2579,7 +2579,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			}
 
-		} else if ( object instanceof THREE.PointCloud ) {
+		} /*else if ( object instanceof THREE.PointCloud ) {
 
 			// render particles
 
@@ -2793,7 +2793,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			}
 
-		}
+		}*/
 
 	};
 
@@ -3024,7 +3024,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 		// render lines
 
-		} else if ( object instanceof THREE.Line ) {
+		} /*else if ( object instanceof THREE.Line ) {
 
 			var mode = ( object.mode === THREE.LineStrip ) ? _gl.LINE_STRIP : _gl.LINES;
 
@@ -3036,14 +3036,14 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 		// render particles
 
-		} else if ( object instanceof THREE.PointCloud ) {
+		}*/ /*else if ( object instanceof THREE.PointCloud ) {
 
 			_gl.drawArrays( _gl.POINTS, 0, geometryGroup.__webglParticleCount );
 
 			_this.info.render.calls ++;
 			_this.info.render.points += geometryGroup.__webglParticleCount;
 
-		}
+		}*/
 
 	};
 
@@ -3293,7 +3293,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 		// update Skeleton objects
 
-		scene.traverse( function ( object ) {
+		/*scene.traverse( function ( object ) {
 
 			if ( object instanceof THREE.SkinnedMesh ) {
 
@@ -3301,7 +3301,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			}
 
-		} );
+		} );*/
 
 		camera.matrixWorldInverse.getInverse( camera.matrixWorld );
 
@@ -3326,7 +3326,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 		// custom render plugins (pre pass)
 
-		shadowMapPlugin.render( scene, camera );
+		//shadowMapPlugin.render( scene, camera );
 
 		//
 
@@ -3388,8 +3388,8 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 		// custom render plugins (post pass)
 
-		spritePlugin.render( scene, camera );
-		lensFlarePlugin.render( scene, camera, _currentWidth, _currentHeight );
+		//spritePlugin.render( scene, camera );
+		//lensFlarePlugin.render( scene, camera, _currentWidth, _currentHeight );
 
 		// Generate mipmap if we're using any kind of mipmap filtering
 
@@ -3425,15 +3425,15 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 				lights.push( object );
 
-			} else if ( object instanceof THREE.Sprite ) {
+			} /*else if ( object instanceof THREE.Sprite ) {
 
 				sprites.push( object );
 
-			} else if ( object instanceof THREE.LensFlare ) {
+			}*//* else if ( object instanceof THREE.LensFlare ) {
 
 				lensFlares.push( object );
 
-			} else {
+			}*/ else {
 
 				var webglObjects = _webglObjects[ object.id ];
 
@@ -3662,7 +3662,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 				initGeometryGroups( object, geometry );
 
-			} else if ( object instanceof THREE.Line ) {
+			} /*else if ( object instanceof THREE.Line ) {
 
 				if ( geometry.__webglVertexBuffer === undefined ) {
 
@@ -3675,7 +3675,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 				}
 
-			} else if ( object instanceof THREE.PointCloud ) {
+			}*/ /*else if ( object instanceof THREE.PointCloud ) {
 
 				if ( geometry.__webglVertexBuffer === undefined ) {
 
@@ -3687,7 +3687,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 				}
 
-			}
+			}*/
 
 		}
 
@@ -3713,11 +3713,11 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 				}
 
-			} else if ( object instanceof THREE.Line || object instanceof THREE.PointCloud ) {
+			} /*else if ( object instanceof THREE.Line || object instanceof THREE.PointCloud ) {
 
 				addBuffer( _webglObjects, geometry, object );
 
-			} else if ( object instanceof THREE.ImmediateRenderObject || object.immediateRenderCallback ) {
+			}*/ else if ( object instanceof THREE.ImmediateRenderObject || object.immediateRenderCallback ) {
 
 				addBufferImmediate( _webglObjectsImmediate, object );
 
@@ -3984,7 +3984,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			material.attributes && clearCustomAttributes( material );
 
-		} else if ( object instanceof THREE.Line ) {
+		} /*else if ( object instanceof THREE.Line ) {
 
 			var material = getBufferMaterial( object, geometry );
 			var customAttributesDirty = material.attributes && areCustomAttributesDirty( material );
@@ -4001,7 +4001,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			material.attributes && clearCustomAttributes( material );
 
-		} else if ( object instanceof THREE.PointCloud ) {
+		}*/ /*else if ( object instanceof THREE.PointCloud ) {
 
 			var material = getBufferMaterial( object, geometry );
 			var customAttributesDirty = material.attributes && areCustomAttributesDirty( material );
@@ -4017,7 +4017,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			material.attributes && clearCustomAttributes( material );
 
-		}
+		}*/
 
 	}
 
@@ -4049,9 +4049,9 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 	function removeObject( object ) {
 
-		if ( object instanceof THREE.Mesh  ||
+		if ( object instanceof THREE.Mesh  /*||
 			 object instanceof THREE.PointCloud ||
-			 object instanceof THREE.Line ) {
+			 object instanceof THREE.Line */) {
 
 			delete _webglObjects[ object.id ];
 
@@ -4091,9 +4091,9 @@ THREE.WebGLRenderer = function ( parameters ) {
 		MeshBasicMaterial: 'basic',
 		MeshLambertMaterial: 'lambert',
 		MeshPhongMaterial: 'phong',
-		LineBasicMaterial: 'basic',
-		LineDashedMaterial: 'dashed',
-		PointCloudMaterial: 'particle_basic'
+		//LineBasicMaterial: 'basic',
+		//LineDashedMaterial: 'dashed',
+		//PointCloudMaterial: 'particle_basic'
 	};
 
 	function initMaterial( material, lights, fog, object ) {
@@ -4147,9 +4147,9 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			vertexColors: material.vertexColors,
 
-			fog: fog,
-			useFog: material.fog,
-			fogExp: fog instanceof THREE.FogExp2,
+			//fog: fog,
+			//useFog: material.fog,
+			//fogExp: fog instanceof THREE.FogExp2,
 
 			flatShading: material.shading === THREE.FlatShading,
 
@@ -4513,7 +4513,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			// refresh single material specific uniforms
 
-			if ( material instanceof THREE.LineBasicMaterial ) {
+			/*if ( material instanceof THREE.LineBasicMaterial ) {
 
 				refreshUniformsLine( m_uniforms, material );
 
@@ -4526,7 +4526,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 				refreshUniformsParticle( m_uniforms, material );
 
-			} else if ( material instanceof THREE.MeshPhongMaterial ) {
+			} else*/ if ( material instanceof THREE.MeshPhongMaterial ) {
 
 				refreshUniformsPhong( m_uniforms, material );
 
@@ -5118,7 +5118,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 					if ( ! texture ) continue;
 
-					if ( texture instanceof THREE.CubeTexture ||
+					/*if ( texture instanceof THREE.CubeTexture ||
 					   ( texture.image instanceof Array && texture.image.length === 6 ) ) { // CompressedTexture can have Array in image :/
 
 						setCubeTexture( texture, textureUnit );
@@ -5127,11 +5127,11 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 						setCubeTextureDynamic( texture, textureUnit );
 
-					} else {
+					} else {*/
 
 						_this.setTexture( texture, textureUnit );
 
-					}
+					/*}*/
 
 					break;
 
@@ -5505,7 +5505,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 		var mipmap, mipmaps = texture.mipmaps;
 
-		if ( texture instanceof THREE.DataTexture ) {
+		/*if ( texture instanceof THREE.DataTexture ) {
 
 			// use manually created mipmaps if available
 			// if there are no manual mipmaps
@@ -5555,7 +5555,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 			}
 
 		} else { // regular Texture (image, video, canvas)
-
+		*/
 			// use manually created mipmaps if available
 			// if there are no manual mipmaps
 			// set 0 level mipmap and then use GL to generate other mipmap levels
@@ -5577,7 +5577,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			}
 
-		}
+		/*}*/
 
 		if ( texture.generateMipmaps && isImagePowerOfTwo ) _gl.generateMipmap( _gl.TEXTURE_2D );
 
@@ -6135,7 +6135,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			var maxBones = nVertexMatrices;
 
-			if ( object !== undefined && object instanceof THREE.SkinnedMesh ) {
+			/*if ( object !== undefined && object instanceof THREE.SkinnedMesh ) {
 
 				maxBones = Math.min( object.skeleton.bones.length, maxBones );
 
@@ -6145,7 +6145,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 				}
 
-			}
+			}*/
 
 			return maxBones;
 
