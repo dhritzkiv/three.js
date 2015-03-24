@@ -196,7 +196,7 @@ THREE.RGBA_PVRTC_2BPPV1_Format = 2103;
 
 // DEPRECATED
 
-THREE.Projector = function () {
+/*THREE.Projector = function () {
 
 	THREE.error( 'THREE.Projector has been moved to /examples/js/renderers/Projector.js.' );
 
@@ -220,9 +220,9 @@ THREE.Projector = function () {
 
 	};
 
-};
+};*/
 
-THREE.CanvasRenderer = function () {
+/*THREE.CanvasRenderer = function () {
 
 	THREE.error( 'THREE.CanvasRenderer has been moved to /examples/js/renderers/CanvasRenderer.js' );
 
@@ -232,7 +232,7 @@ THREE.CanvasRenderer = function () {
 	this.setClearColor = function () {};
 	this.setSize = function () {};
 
-};
+};*/
 
 // File:src/math/Color.js
 
