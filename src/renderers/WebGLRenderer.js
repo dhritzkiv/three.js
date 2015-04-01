@@ -369,8 +369,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 	// Plugins
 	//var spritePlugin = new THREE.SpritePlugin( this, sprites );
 
-	var lensFlarePlugin = new THREE.LensFlarePlugin( this, lensFlares );
-;	// API
+	//var lensFlarePlugin = new THREE.LensFlarePlugin( this, lensFlares );
 
 	this.getContext = function () {
 
