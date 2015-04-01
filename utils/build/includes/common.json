@@ -146,12 +146,13 @@
 	"src/renderers/WebGLRenderer.js",
 	"src/renderers/WebGLRenderTarget.js",
 	"src/renderers/WebGLRenderTargetCube.js",
+	"src/renderers/webgl/WebGLBuffers.js",
 	"src/renderers/webgl/WebGLExtensions.js",
 	"src/renderers/webgl/WebGLProgram.js",
 	"src/renderers/webgl/WebGLShader.js",
+	"src/renderers/webgl/WebGLShadowMap.js",
 	"src/renderers/webgl/WebGLState.js",
 	"src/renderers/webgl/plugins/LensFlarePlugin.js",
-	"src/renderers/webgl/plugins/ShadowMapPlugin.js",
 	"src/renderers/webgl/plugins/SpritePlugin.js"
 
 ]
