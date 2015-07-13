@@ -874,25 +874,20 @@ THREE.BufferGeometry.prototype = {
 		}
 	},
 
-	toJSON: function() {
+	toJSON: function () {
 
-		// we will store all serialization data on 'data'
-		var data = {};
-
-		// add metadata
-		data.metadata = {
-			version: 4.4,
-			type: 'BufferGeometry',
-			generator: 'BufferGeometry.toJSON'
-		}
-
-		// standard BufferGeometry serialization
-
-		data.type = this.type;
-		data.uuid = this.uuid;
-		if ( this.name !== '' ) data.name = this.name;
-		data.data = {};
-		data.data.attributes = {};
+		var output = {
+			metadata: {
+				version: 4.0,
+				type: 'BufferGeometry',
+				generator: 'BufferGeometryExporter'
+			},
+			uuid: this.uuid,
+			type: this.type,
+			data: {
+				attributes: {}
+			}
+		};
 
 		var attributes = this.attributes;
 		var offsets = this.offsets;
@@ -904,7 +899,7 @@ THREE.BufferGeometry.prototype = {
 
 			var array = Array.prototype.slice.call( attribute.array );
 
-			data.data.attributes[ key ] = {
+			output.data.attributes[ key ] = {
 				itemSize: attribute.itemSize,
 				type: attribute.array.constructor.name,
 				array: array
@@ -914,20 +909,20 @@ THREE.BufferGeometry.prototype = {
 
 		if ( offsets.length > 0 ) {
 
-			data.data.offsets = JSON.parse( JSON.stringify( offsets ) );
+			output.data.offsets = JSON.parse( JSON.stringify( offsets ) );
 
 		}
 
 		if ( boundingSphere !== null ) {
 
-			data.data.boundingSphere = {
+			output.data.boundingSphere = {
 				center: boundingSphere.center.toArray(),
 				radius: boundingSphere.radius
 			}
 
 		}
 
-		return data;
+		return output;
 
 	},
 
