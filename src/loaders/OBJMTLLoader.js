@@ -40,8 +40,12 @@ THREE.OBJMTLLoader.prototype = {
 						if ( object.material.name ) {
 
 							var material = materialsCreator.create( object.material.name );
-
-							if ( material ) object.material = material;
+							
+							if ( material ) {
+								//shading isn't defined in the mtl file, but in the obj, so it must be set here.
+								material.shading = object.material.shading;
+								object.material = material;
+							}
 
 						}
 
@@ -92,6 +96,8 @@ THREE.OBJMTLLoader.prototype = {
 
 		var face_offset = 0;
 
+		var smoothShading = true;//smooth shading on by default
+
 		function meshN( meshName, materialName ) {
 
 			if ( vertices.length > 0 ) {
@@ -105,6 +111,7 @@ THREE.OBJMTLLoader.prototype = {
 				object.add( mesh );
 
 				geometry = new THREE.Geometry();
+				material.shading = smoothShading ? THREE.SmoothShading : THREE.FlatShading;
 				mesh = new THREE.Mesh( geometry, material );
 
 			}
@@ -113,7 +120,7 @@ THREE.OBJMTLLoader.prototype = {
 
 			if ( materialName !== undefined ) {
 
-				material = new THREE.MeshLambertMaterial();
+				material = new THREE.MeshNormalMaterial();
 				material.name = materialName;
 
 				mesh.material = material;
@@ -126,7 +133,7 @@ THREE.OBJMTLLoader.prototype = {
 		var object = group;
 
 		var geometry = new THREE.Geometry();
-		var material = new THREE.MeshLambertMaterial();
+		var material = new THREE.MeshNormalMaterial();
 		var mesh = new THREE.Mesh( geometry, material );
 
 		var vertices = [];
@@ -354,8 +361,15 @@ THREE.OBJMTLLoader.prototype = {
 
 				// Smooth shading
 
-			} else {
+				result = line.substring(2);
+				if (result === "1" || result === "on") {
+					smoothShading = true;
+				} else if (result === "0" || result === "off") {
+					smoothShading = false;
+				}
 
+			} else {
+				//unhandled line
 				console.log( "THREE.OBJMTLLoader: Unhandled line " + line );
 
 			}
