@@ -12413,9 +12413,11 @@ THREE.TextureLoader.prototype = {
 /**
  * @author mrdoob / http://mrdoob.com/
  */
- 
+
 THREE.OBJLoader = function ( manager ) {
+
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
+
 };
 
 THREE.OBJLoader.prototype = {
@@ -12436,7 +12438,15 @@ THREE.OBJLoader.prototype = {
 
 	},
 
+	setCrossOrigin: function ( value ) {
+
+		this.crossOrigin = value;
+
+	},
+
 	parse: function ( text ) {
+
+		console.time( 'OBJLoader' );
 
 		var object, objects = [];
 		var geometry, material;
@@ -12495,11 +12505,12 @@ THREE.OBJLoader.prototype = {
 
 		}
 
-		function addFace( a, b, c, d,  ua, ub, uc, ud,  na, nb, nc, nd ) {
+		function addFace( a, b, c, d,  ua, ub, uc, ud, na, nb, nc, nd ) {
 
 			var ia = parseVertexIndex( a );
 			var ib = parseVertexIndex( b );
 			var ic = parseVertexIndex( c );
+			var id;
 
 			if ( d === undefined ) {
 
@@ -12507,7 +12518,7 @@ THREE.OBJLoader.prototype = {
 
 			} else {
 
-				var id = parseVertexIndex( d );
+				id = parseVertexIndex( d );
 
 				addVertex( ia, ib, id );
 				addVertex( ib, ic, id );
@@ -12516,9 +12527,9 @@ THREE.OBJLoader.prototype = {
 
 			if ( ua !== undefined ) {
 
-				var ia = parseUVIndex( ua );
-				var ib = parseUVIndex( ub );
-				var ic = parseUVIndex( uc );
+				ia = parseUVIndex( ua );
+				ib = parseUVIndex( ub );
+				ic = parseUVIndex( uc );
 
 				if ( d === undefined ) {
 
@@ -12526,7 +12537,7 @@ THREE.OBJLoader.prototype = {
 
 				} else {
 
-					var id = parseUVIndex( ud );
+					id = parseUVIndex( ud );
 
 					addUV( ia, ib, id );
 					addUV( ib, ic, id );
@@ -12537,9 +12548,9 @@ THREE.OBJLoader.prototype = {
 
 			if ( na !== undefined ) {
 
-				var ia = parseNormalIndex( na );
-				var ib = parseNormalIndex( nb );
-				var ic = parseNormalIndex( nc );
+				ia = parseNormalIndex( na );
+				ib = parseNormalIndex( nb );
+				ic = parseNormalIndex( nc );
 
 				if ( d === undefined ) {
 
@@ -12547,7 +12558,7 @@ THREE.OBJLoader.prototype = {
 
 				} else {
 
-					var id = parseNormalIndex( nd );
+					id = parseNormalIndex( nd );
 
 					addNormal( ia, ib, id );
 					addNormal( ib, ic, id );
@@ -12612,7 +12623,7 @@ THREE.OBJLoader.prototype = {
 
 		// f vertex//normal vertex//normal vertex//normal ...
 
-		var face_pattern4 = /f( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))?/
+		var face_pattern4 = /f( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))?/;
 
 		//
 
@@ -12735,7 +12746,7 @@ THREE.OBJLoader.prototype = {
 
 			} else {
 
-				// console.log( "THREE.THREE.OBJLoader: Unhandled line " + line );
+				// console.log( "THREE.OBJLoader: Unhandled line " + line );
 
 			}
 
@@ -12745,22 +12756,26 @@ THREE.OBJLoader.prototype = {
 
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
-			var object = objects[ i ];
-			var geometry = object.geometry;
+			object = objects[ i ];
+			geometry = object.geometry;
 
 			var buffergeometry = new THREE.BufferGeometry();
 
 			buffergeometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array( geometry.vertices ), 3 ) );
 
 			if ( geometry.normals.length > 0 ) {
+
 				buffergeometry.addAttribute( 'normal', new THREE.BufferAttribute( new Float32Array( geometry.normals ), 3 ) );
+
 			}
 
 			if ( geometry.uvs.length > 0 ) {
+
 				buffergeometry.addAttribute( 'uv', new THREE.BufferAttribute( new Float32Array( geometry.uvs ), 2 ) );
+
 			}
 
-			var material = new THREE.MeshPhongMaterial();
+			material = new THREE.MeshLambertMaterial();
 			material.name = object.material.name;
 
 			var mesh = new THREE.Mesh( buffergeometry, material );
@@ -12769,6 +12784,8 @@ THREE.OBJLoader.prototype = {
 			container.add( mesh );
 
 		}
+
+		console.timeEnd( 'OBJLoader' );
 
 		return container;
 
@@ -12783,10 +12800,10 @@ THREE.OBJLoader.prototype = {
  * @author angelxuanchang
  */
 
-THREE.MTLLoader = function( baseUrl, options, crossOrigin ) {
-	this.baseUrl = baseUrl;
-	this.options = options;
-	this.crossOrigin = crossOrigin;
+THREE.MTLLoader = function( manager ) {
+
+	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
+
 };
 
 THREE.MTLLoader.prototype = {
@@ -12797,7 +12814,7 @@ THREE.MTLLoader.prototype = {
 
 		var scope = this;
 
-		var loader = new THREE.XHRLoader();
+		var loader = new THREE.XHRLoader( this.manager );
 		loader.setCrossOrigin( this.crossOrigin );
 		loader.load( url, function ( text ) {
 
@@ -12807,10 +12824,28 @@ THREE.MTLLoader.prototype = {
 
 	},
 
+	setBaseUrl: function( value ) {
+
+		this.baseUrl = value;
+
+	},
+
+	setCrossOrigin: function ( value ) {
+
+		this.crossOrigin = value;
+
+	},
+
+	setMaterialOptions: function ( value ) {
+
+		this.materialOptions = value;
+
+	},
+
 	/**
 	 * Parses loaded MTL file
 	 * @param text - Content of MTL file
-	 * @return {THREE.THREE.MTLLoader.MaterialCreator}
+	 * @return {THREE.MTLLoader.MaterialCreator}
 	 */
 	parse: function ( text ) {
 
@@ -12851,7 +12886,7 @@ THREE.MTLLoader.prototype = {
 				if ( key === "ka" || key === "kd" || key === "ks" ) {
 
 					var ss = value.split( delimiter_pattern, 3 );
-					info[ key ] = [ parseFloat( ss[0] ), parseFloat( ss[1] ), parseFloat( ss[2] ) ];
+					info[ key ] = [ parseFloat( ss[ 0 ] ), parseFloat( ss[ 1 ] ), parseFloat( ss[ 2 ] ) ];
 
 				} else {
 
@@ -12863,7 +12898,9 @@ THREE.MTLLoader.prototype = {
 
 		}
 
-		var materialCreator = new THREE.MTLLoader.MaterialCreator( this.baseUrl, this.options );
+		var materialCreator = new THREE.MTLLoader.MaterialCreator( this.baseUrl, this.materialOptions );
+		materialCreator.setCrossOrigin( this.crossOrigin );
+		materialCreator.setManager( this.manager );
 		materialCreator.setMaterials( materialsInfo );
 		return materialCreator;
 
@@ -12872,7 +12909,7 @@ THREE.MTLLoader.prototype = {
 };
 
 /**
- * Create a new THREE-THREE.MTLLoader.MaterialCreator
+ * Create a new THREE-MTLLoader.MaterialCreator
  * @param baseUrl - Url relative to which textures are loaded
  * @param options - Set of options on how to construct the materials
  *                  side: Which side to apply the material
@@ -12897,14 +12934,26 @@ THREE.MTLLoader.MaterialCreator = function( baseUrl, options ) {
 	this.materialsArray = [];
 	this.nameLookup = {};
 
-	this.side = ( this.options && this.options.side )? this.options.side: THREE.FrontSide;
-	this.wrap = ( this.options && this.options.wrap )? this.options.wrap: THREE.RepeatWrapping;
+	this.side = ( this.options && this.options.side ) ? this.options.side : THREE.FrontSide;
+	this.wrap = ( this.options && this.options.wrap ) ? this.options.wrap : THREE.RepeatWrapping;
 
 };
 
 THREE.MTLLoader.MaterialCreator.prototype = {
 
 	constructor: THREE.MTLLoader.MaterialCreator,
+
+	setCrossOrigin: function ( value ) {
+
+		this.crossOrigin = value;
+
+	},
+
+	setManager: function ( value ) {
+
+		this.manager = value;
+
+	},
 
 	setMaterials: function( materialsInfo ) {
 
@@ -12917,7 +12966,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 	convert: function( materialsInfo ) {
 
-		if ( !this.options ) return materialsInfo;
+		if ( ! this.options ) return materialsInfo;
 
 		var converted = {};
 
@@ -12960,6 +13009,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 								save = false;
 
 							}
+
 						}
 
 						break;
@@ -12997,11 +13047,11 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 	},
 
-	preload: function (onImageLoad) {
+	preload: function () {
 
 		for ( var mn in this.materialsInfo ) {
 
-			this.create( mn , onImageLoad);
+			this.create( mn );
 
 		}
 
@@ -13029,11 +13079,11 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 	},
 
-	create: function ( materialName , onImageLoad) {
+	create: function ( materialName ) {
 
 		if ( this.materials[ materialName ] === undefined ) {
 
-			this.createMaterial_( materialName , onImageLoad);
+			this.createMaterial_( materialName );
 
 		}
 
@@ -13041,7 +13091,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 	},
 
-	createMaterial_: function ( materialName , imageOnLoad) {
+	createMaterial_: function ( materialName ) {
 
 		// Create material
 
@@ -13073,8 +13123,6 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 					// Ambient color (color under shadow) using RGB values
 
-					params[ 'ambient' ] = new THREE.Color().fromArray( value );
-
 					break;
 
 				case 'ks':
@@ -13088,7 +13136,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 					// Diffuse texture map
 
-					params[ 'map' ] = this.loadTexture( this.baseUrl + value , undefined, imageOnLoad);
+					params[ 'map' ] = this.loadTexture( this.baseUrl + value );
 					params[ 'map' ].wrapS = this.wrap;
 					params[ 'map' ].wrapT = this.wrap;
 
@@ -13099,7 +13147,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 					// The specular exponent (defines the focus of the specular highlight)
 					// A high exponent results in a tight, concentrated highlight. Ns values normally range from 0 to 1000.
 
-					params['shininess'] = value;
+					params[ 'shininess' ] = value;
 
 					break;
 
@@ -13111,10 +13159,23 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 					if ( value < 1 ) {
 
-						params['transparent'] = true;
-						params['opacity'] = value;
+						params[ 'transparent' ] = true;
+						params[ 'opacity' ] = value;
 
 					}
+
+					break;
+
+				case 'map_bump':
+				case 'bump':
+
+					// Bump texture map
+
+					if ( params[ 'bumpMap' ] ) break; // Avoid loading twice.
+
+					params[ 'bumpMap' ] = this.loadTexture( this.baseUrl + value );
+					params[ 'bumpMap' ].wrapS = this.wrap;
+					params[ 'bumpMap' ].wrapT = this.wrap;
 
 					break;
 
@@ -13127,7 +13188,6 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 		if ( params[ 'diffuse' ] ) {
 
-			if ( !params[ 'ambient' ]) params[ 'ambient' ] = params[ 'diffuse' ];
 			params[ 'color' ] = params[ 'diffuse' ];
 
 		}
@@ -13138,20 +13198,22 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 	},
 
 
-	loadTexture: function ( url, mapping, onLoad, onError ) {
+	loadTexture: function ( url, mapping, onLoad, onProgress, onError ) {
 
 		var texture;
 		var loader = THREE.Loader.Handlers.get( url );
+		var manager = ( this.manager !== undefined ) ? this.manager : THREE.DefaultLoadingManager;
 
 		if ( loader !== null ) {
 
 			texture = loader.load( url, onLoad );
 
 		} else {
+
 			texture = new THREE.Texture();
 
-			loader = new THREE.ImageLoader();
-			loader.crossOrigin = "";
+			loader = new THREE.ImageLoader( manager );
+			loader.setCrossOrigin( this.crossOrigin );
 			loader.load( url, function ( image ) {
 
 				texture.image = THREE.MTLLoader.ensurePowerOfTwo_( image );
@@ -13159,11 +13221,11 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 				if ( onLoad ) onLoad( texture );
 
-			} );
+			}, onProgress, onError );
 
 		}
 
-		texture.mapping = mapping;
+		if ( mapping !== undefined ) texture.mapping = mapping;
 
 		return texture;
 
@@ -13179,7 +13241,7 @@ THREE.MTLLoader.ensurePowerOfTwo_ = function ( image ) {
 		canvas.width = THREE.MTLLoader.nextHighestPowerOfTwo_( image.width );
 		canvas.height = THREE.MTLLoader.nextHighestPowerOfTwo_( image.height );
 
-		var ctx = canvas.getContext("2d");
+		var ctx = canvas.getContext( "2d" );
 		ctx.drawImage( image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height );
 		return canvas;
 
@@ -13191,7 +13253,7 @@ THREE.MTLLoader.ensurePowerOfTwo_ = function ( image ) {
 
 THREE.MTLLoader.nextHighestPowerOfTwo_ = function( x ) {
 
-	--x;
+	-- x;
 
 	for ( var i = 1; i < 32; i <<= 1 ) {
 
@@ -13214,24 +13276,29 @@ THREE.EventDispatcher.prototype.apply( THREE.MTLLoader.prototype );
  */
 
 THREE.OBJMTLLoader = function ( manager ) {
+
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
+
 };
 
 THREE.OBJMTLLoader.prototype = {
 
 	constructor: THREE.OBJMTLLoader,
 
-	load: function ( url, mtlurl, onLoad, onImageLoad, onProgress, onError ) {
+	load: function ( url, mtlurl, onLoad, onProgress, onError ) {
 
 		var scope = this;
-		this.crossOrigin = "";
-		var subURL = url.substr( 0, url.lastIndexOf( "/" ) + 1 );
-		var mtlLoader = new THREE.MTLLoader( subURL, {}, this.crossOrigin);
+
+		var mtlLoader = new THREE.MTLLoader( this.manager );
+		mtlLoader.setBaseUrl( url.substr( 0, url.lastIndexOf( "/" ) + 1 ) );
+		mtlLoader.setCrossOrigin( this.crossOrigin );
 		mtlLoader.load( mtlurl, function ( materials ) {
 
-			materials.preload(onImageLoad);
+			var materialsCreator = materials;
+			materialsCreator.preload();
+
 			var loader = new THREE.XHRLoader( scope.manager );
-			loader.setCrossOrigin( self.crossOrigin );
+			loader.setCrossOrigin( scope.crossOrigin );
 			loader.load( url, function ( text ) {
 
 				var object = scope.parse( text );
@@ -13242,9 +13309,7 @@ THREE.OBJMTLLoader.prototype = {
 
 						if ( object.material.name ) {
 
-							var material = materials.create( object.material.name );
-							material.shading = object.material.shading;
-							//shading isn't defined in the mtl file, but in the obj, so it must be set here.
+							var material = materialsCreator.create( object.material.name );
 
 							if ( material ) object.material = material;
 
@@ -13262,6 +13327,12 @@ THREE.OBJMTLLoader.prototype = {
 
 	},
 
+	setCrossOrigin: function ( value ) {
+
+		this.crossOrigin = value;
+
+	},
+
 	/**
 	 * Parses loaded .obj file
 	 * @param data - content of .obj file
@@ -13272,20 +13343,24 @@ THREE.OBJMTLLoader.prototype = {
 	parse: function ( data, mtllibCallback ) {
 
 		function vector( x, y, z ) {
+
 			return new THREE.Vector3( x, y, z );
+
 		}
 
 		function uv( u, v ) {
+
 			return new THREE.Vector2( u, v );
+
 		}
 
 		function face3( a, b, c, normals ) {
+
 			return new THREE.Face3( a, b, c, normals );
+
 		}
 
 		var face_offset = 0;
-
-		var smoothShading = true;//smooth shading on by default
 
 		function meshN( meshName, materialName ) {
 
@@ -13300,30 +13375,29 @@ THREE.OBJMTLLoader.prototype = {
 				object.add( mesh );
 
 				geometry = new THREE.Geometry();
-				material.shading = smoothShading ? THREE.SmoothShading : THREE.FlatShading;
 				mesh = new THREE.Mesh( geometry, material );
+
 			}
 
 			if ( meshName !== undefined ) mesh.name = meshName;
 
 			if ( materialName !== undefined ) {
 
-				material = new THREE.MeshNormalMaterial();
+				material = new THREE.MeshLambertMaterial();
 				material.name = materialName;
 
 				mesh.material = material;
+
 			}
 
 		}
 
-		var group = new THREE.Object3D();
+		var group = new THREE.Group();
 		var object = group;
 
 		var geometry = new THREE.Geometry();
-		var material = new THREE.MeshNormalMaterial();
+		var material = new THREE.MeshLambertMaterial();
 		var mesh = new THREE.Mesh( geometry, material );
-		//mesh.receiveShadow = true;
-		//mesh.castShadow = true;
 
 		var vertices = [];
 		var normals = [];
@@ -13332,57 +13406,71 @@ THREE.OBJMTLLoader.prototype = {
 		function add_face( a, b, c, normals_inds ) {
 
 			if ( normals_inds === undefined ) {
+
 				geometry.faces.push( face3(
-					parseInt( a ) - (face_offset + 1),
-					parseInt( b ) - (face_offset + 1),
-					parseInt( c ) - (face_offset + 1)
+					parseInt( a ) - ( face_offset + 1 ),
+					parseInt( b ) - ( face_offset + 1 ),
+					parseInt( c ) - ( face_offset + 1 )
 				) );
+
 			} else {
+
 				geometry.faces.push( face3(
-					parseInt( a ) - (face_offset + 1),
-					parseInt( b ) - (face_offset + 1),
-					parseInt( c ) - (face_offset + 1),
+					parseInt( a ) - ( face_offset + 1 ),
+					parseInt( b ) - ( face_offset + 1 ),
+					parseInt( c ) - ( face_offset + 1 ),
 					[
 						normals[ parseInt( normals_inds[ 0 ] ) - 1 ].clone(),
 						normals[ parseInt( normals_inds[ 1 ] ) - 1 ].clone(),
 						normals[ parseInt( normals_inds[ 2 ] ) - 1 ].clone()
 					]
 				) );
+
 			}
 
 		}
 
 		function add_uvs( a, b, c ) {
+
 			geometry.faceVertexUvs[ 0 ].push( [
 				uvs[ parseInt( a ) - 1 ].clone(),
 				uvs[ parseInt( b ) - 1 ].clone(),
 				uvs[ parseInt( c ) - 1 ].clone()
 			] );
+
 		}
 
-		function handle_face_line(faces, uvs, normals_inds) {
+		function handle_face_line( faces, uvs, normals_inds ) {
 
 			if ( faces[ 3 ] === undefined ) {
+
 				add_face( faces[ 0 ], faces[ 1 ], faces[ 2 ], normals_inds );
 
-				if (!(uvs === undefined) && uvs.length > 0) {
+				if ( ! ( uvs === undefined ) && uvs.length > 0 ) {
+
 					add_uvs( uvs[ 0 ], uvs[ 1 ], uvs[ 2 ] );
+
 				}
 
 			} else {
 
-				if (!(normals_inds === undefined) && normals_inds.length > 0) {
-					add_face( faces[ 0 ], faces[ 1 ], faces[ 3 ], [ normals_inds[ 0 ], normals_inds[ 1 ], normals_inds[ 3 ] ]);
-					add_face( faces[ 1 ], faces[ 2 ], faces[ 3 ], [ normals_inds[ 1 ], normals_inds[ 2 ], normals_inds[ 3 ] ]);
+				if ( ! ( normals_inds === undefined ) && normals_inds.length > 0 ) {
+
+					add_face( faces[ 0 ], faces[ 1 ], faces[ 3 ], [ normals_inds[ 0 ], normals_inds[ 1 ], normals_inds[ 3 ] ] );
+					add_face( faces[ 1 ], faces[ 2 ], faces[ 3 ], [ normals_inds[ 1 ], normals_inds[ 2 ], normals_inds[ 3 ] ] );
 
 				} else {
-					add_face( faces[ 0 ], faces[ 1 ], faces[ 3 ]);
-					add_face( faces[ 1 ], faces[ 2 ], faces[ 3 ]);
+
+					add_face( faces[ 0 ], faces[ 1 ], faces[ 3 ] );
+					add_face( faces[ 1 ], faces[ 2 ], faces[ 3 ] );
+
 				}
 
-				if (!(uvs === undefined) && uvs.length > 0) {
+				if ( ! ( uvs === undefined ) && uvs.length > 0 ) {
+
 					add_uvs( uvs[ 0 ], uvs[ 1 ], uvs[ 3 ] );
 					add_uvs( uvs[ 1 ], uvs[ 2 ], uvs[ 3 ] );
+
 				}
 
 			}
@@ -13391,39 +13479,52 @@ THREE.OBJMTLLoader.prototype = {
 
 
 		// v float float float
+
 		var vertex_pattern = /v( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/;
 
 		// vn float float float
+
 		var normal_pattern = /vn( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/;
 
 		// vt float float
+
 		var uv_pattern = /vt( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/;
 
 		// f vertex vertex vertex ...
+
 		var face_pattern1 = /f( +\d+)( +\d+)( +\d+)( +\d+)?/;
 
 		// f vertex/uv vertex/uv vertex/uv ...
+
 		var face_pattern2 = /f( +(\d+)\/(\d+))( +(\d+)\/(\d+))( +(\d+)\/(\d+))( +(\d+)\/(\d+))?/;
 
 		// f vertex/uv/normal vertex/uv/normal vertex/uv/normal ...
+
 		var face_pattern3 = /f( +(\d+)\/(\d+)\/(\d+))( +(\d+)\/(\d+)\/(\d+))( +(\d+)\/(\d+)\/(\d+))( +(\d+)\/(\d+)\/(\d+))?/;
 
 		// f vertex//normal vertex//normal vertex//normal ...
-		var face_pattern4 = /f( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))?/
+
+		var face_pattern4 = /f( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))?/;
 
 		//
+
 		var lines = data.split( "\n" );
 
 		for ( var i = 0; i < lines.length; i ++ ) {
+
 			var line = lines[ i ];
 			line = line.trim();
+
 			var result;
 
 			if ( line.length === 0 || line.charAt( 0 ) === '#' ) {
+
 				continue;
-			} else if ((result = vertex_pattern.exec( line )) !== null) {
+
+			} else if ( ( result = vertex_pattern.exec( line ) ) !== null ) {
 
 				// ["v 1.0 2.0 3.0", "1.0", "2.0", "3.0"]
+
 				vertices.push( vector(
 					parseFloat( result[ 1 ] ),
 					parseFloat( result[ 2 ] ),
@@ -13433,6 +13534,7 @@ THREE.OBJMTLLoader.prototype = {
 			} else if ( ( result = normal_pattern.exec( line ) ) !== null ) {
 
 				// ["vn 1.0 2.0 3.0", "1.0", "2.0", "3.0"]
+
 				normals.push( vector(
 					parseFloat( result[ 1 ] ),
 					parseFloat( result[ 2 ] ),
@@ -13442,6 +13544,7 @@ THREE.OBJMTLLoader.prototype = {
 			} else if ( ( result = uv_pattern.exec( line ) ) !== null ) {
 
 				// ["vt 0.1 0.2", "0.1", "0.2"]
+
 				uvs.push( uv(
 					parseFloat( result[ 1 ] ),
 					parseFloat( result[ 2 ] )
@@ -13450,11 +13553,13 @@ THREE.OBJMTLLoader.prototype = {
 			} else if ( ( result = face_pattern1.exec( line ) ) !== null ) {
 
 				// ["f 1 2 3", "1", "2", "3", undefined]
-				handle_face_line([ result[ 1 ], result[ 2 ], result[ 3 ], result[ 4 ] ]);
+
+				handle_face_line( [ result[ 1 ], result[ 2 ], result[ 3 ], result[ 4 ] ] );
 
 			} else if ( ( result = face_pattern2.exec( line ) ) !== null ) {
 
 				// ["f 1/1 2/2 3/3", " 1/1", "1", "1", " 2/2", "2", "2", " 3/3", "3", "3", undefined, undefined, undefined]
+
 				handle_face_line(
 					[ result[ 2 ], result[ 5 ], result[ 8 ], result[ 11 ] ], //faces
 					[ result[ 3 ], result[ 6 ], result[ 9 ], result[ 12 ] ] //uv
@@ -13463,6 +13568,7 @@ THREE.OBJMTLLoader.prototype = {
 			} else if ( ( result = face_pattern3.exec( line ) ) !== null ) {
 
 				// ["f 1/1/1 2/2/2 3/3/3", " 1/1/1", "1", "1", "1", " 2/2/2", "2", "2", "2", " 3/3/3", "3", "3", "3", undefined, undefined, undefined, undefined]
+
 				handle_face_line(
 					[ result[ 2 ], result[ 6 ], result[ 10 ], result[ 14 ] ], //faces
 					[ result[ 3 ], result[ 7 ], result[ 11 ], result[ 15 ] ], //uv
@@ -13493,11 +13599,13 @@ THREE.OBJMTLLoader.prototype = {
 			} else if ( /^g /.test( line ) ) {
 
 				// group
+
 				meshN( line.substring( 2 ).trim(), undefined );
 
 			} else if ( /^usemtl /.test( line ) ) {
 
 				// material
+
 				meshN( undefined, line.substring( 7 ).trim() );
 
 			} else if ( /^mtllib /.test( line ) ) {
@@ -13513,25 +13621,19 @@ THREE.OBJMTLLoader.prototype = {
 				}
 
 			} else if ( /^s /.test( line ) ) {
+
 				// Smooth shading
 
-				result = line.substring(2);
-				if (result === "1" || result === "on") {
-					smoothShading = true;
-				} else if (result === "0" || result === "off") {
-					smoothShading = false;
-				}
-
 			} else {
-				//unhandled line
-				console.log( "THREE.THREE.OBJMTLLoader: Unhandled line " + line );
+
+				console.log( "THREE.OBJMTLLoader: Unhandled line " + line );
 
 			}
 
 		}
 
 		//Add last object
-		meshN(undefined, undefined);
+		meshN( undefined, undefined );
 
 		return group;
 

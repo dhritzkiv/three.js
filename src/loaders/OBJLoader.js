@@ -1,9 +1,11 @@
 /**
  * @author mrdoob / http://mrdoob.com/
  */
- 
+
 THREE.OBJLoader = function ( manager ) {
+
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
+
 };
 
 THREE.OBJLoader.prototype = {
@@ -24,7 +26,15 @@ THREE.OBJLoader.prototype = {
 
 	},
 
+	setCrossOrigin: function ( value ) {
+
+		this.crossOrigin = value;
+
+	},
+
 	parse: function ( text ) {
+
+		console.time( 'OBJLoader' );
 
 		var object, objects = [];
 		var geometry, material;
@@ -83,11 +93,12 @@ THREE.OBJLoader.prototype = {
 
 		}
 
-		function addFace( a, b, c, d,  ua, ub, uc, ud,  na, nb, nc, nd ) {
+		function addFace( a, b, c, d,  ua, ub, uc, ud, na, nb, nc, nd ) {
 
 			var ia = parseVertexIndex( a );
 			var ib = parseVertexIndex( b );
 			var ic = parseVertexIndex( c );
+			var id;
 
 			if ( d === undefined ) {
 
@@ -95,7 +106,7 @@ THREE.OBJLoader.prototype = {
 
 			} else {
 
-				var id = parseVertexIndex( d );
+				id = parseVertexIndex( d );
 
 				addVertex( ia, ib, id );
 				addVertex( ib, ic, id );
@@ -104,9 +115,9 @@ THREE.OBJLoader.prototype = {
 
 			if ( ua !== undefined ) {
 
-				var ia = parseUVIndex( ua );
-				var ib = parseUVIndex( ub );
-				var ic = parseUVIndex( uc );
+				ia = parseUVIndex( ua );
+				ib = parseUVIndex( ub );
+				ic = parseUVIndex( uc );
 
 				if ( d === undefined ) {
 
@@ -114,7 +125,7 @@ THREE.OBJLoader.prototype = {
 
 				} else {
 
-					var id = parseUVIndex( ud );
+					id = parseUVIndex( ud );
 
 					addUV( ia, ib, id );
 					addUV( ib, ic, id );
@@ -125,9 +136,9 @@ THREE.OBJLoader.prototype = {
 
 			if ( na !== undefined ) {
 
-				var ia = parseNormalIndex( na );
-				var ib = parseNormalIndex( nb );
-				var ic = parseNormalIndex( nc );
+				ia = parseNormalIndex( na );
+				ib = parseNormalIndex( nb );
+				ic = parseNormalIndex( nc );
 
 				if ( d === undefined ) {
 
@@ -135,7 +146,7 @@ THREE.OBJLoader.prototype = {
 
 				} else {
 
-					var id = parseNormalIndex( nd );
+					id = parseNormalIndex( nd );
 
 					addNormal( ia, ib, id );
 					addNormal( ib, ic, id );
@@ -200,7 +211,7 @@ THREE.OBJLoader.prototype = {
 
 		// f vertex//normal vertex//normal vertex//normal ...
 
-		var face_pattern4 = /f( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))?/
+		var face_pattern4 = /f( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))( +(-?\d+)\/\/(-?\d+))?/;
 
 		//
 
@@ -323,7 +334,7 @@ THREE.OBJLoader.prototype = {
 
 			} else {
 
-				// console.log( "THREE.THREE.OBJLoader: Unhandled line " + line );
+				// console.log( "THREE.OBJLoader: Unhandled line " + line );
 
 			}
 
@@ -333,22 +344,26 @@ THREE.OBJLoader.prototype = {
 
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
-			var object = objects[ i ];
-			var geometry = object.geometry;
+			object = objects[ i ];
+			geometry = object.geometry;
 
 			var buffergeometry = new THREE.BufferGeometry();
 
 			buffergeometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array( geometry.vertices ), 3 ) );
 
 			if ( geometry.normals.length > 0 ) {
+
 				buffergeometry.addAttribute( 'normal', new THREE.BufferAttribute( new Float32Array( geometry.normals ), 3 ) );
+
 			}
 
 			if ( geometry.uvs.length > 0 ) {
+
 				buffergeometry.addAttribute( 'uv', new THREE.BufferAttribute( new Float32Array( geometry.uvs ), 2 ) );
+
 			}
 
-			var material = new THREE.MeshPhongMaterial();
+			material = new THREE.MeshLambertMaterial();
 			material.name = object.material.name;
 
 			var mesh = new THREE.Mesh( buffergeometry, material );
@@ -357,6 +372,8 @@ THREE.OBJLoader.prototype = {
 			container.add( mesh );
 
 		}
+
+		console.timeEnd( 'OBJLoader' );
 
 		return container;
 
