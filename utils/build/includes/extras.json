@@ -63,8 +63,5 @@
 	"src/extras/helpers/VertexTangentsHelper.js",
 	"src/extras/helpers/WireframeHelper.js",
 	"src/extras/objects/ImmediateRenderObject.js",
-	"src/extras/objects/MorphBlendMesh.js",
-	"src/loaders/OBJMTLLoader.js",
-	"src/loaders/MTLLoader.js",
-	"src/loaders/OBJLoader.js"
+	"src/extras/objects/MorphBlendMesh.js"
 ]
