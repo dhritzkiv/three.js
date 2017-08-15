@@ -1771,7 +1771,8 @@ THREE.GLTF2Loader = ( function () {
 		var json = this.json;
 
 		return this._withDependencies( [
-
+			
+			'accessors',
 			'materials'
 
 		] ).then( function ( dependencies ) {
